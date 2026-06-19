@@ -15,10 +15,13 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.util.SerializationUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * @author Dave Syer
@@ -36,6 +39,26 @@ class VetTests {
 		assertThat(other.getFirstName()).isEqualTo(vet.getFirstName());
 		assertThat(other.getLastName()).isEqualTo(vet.getLastName());
 		assertThat(other.getId()).isEqualTo(vet.getId());
+	}
+
+	@Test
+	void getSpecialtiesReturnsSortedUnmodifiableList() {
+		Vet vet = new Vet();
+		Specialty radiology = new Specialty();
+		radiology.setName("radiology");
+		Specialty surgery = new Specialty();
+		surgery.setName("surgery");
+		Specialty dentistry = new Specialty();
+		dentistry.setName("dentistry");
+
+		vet.addSpecialty(radiology);
+		vet.addSpecialty(surgery);
+		vet.addSpecialty(dentistry);
+
+		List<Specialty> specialties = vet.getSpecialties();
+		assertThat(specialties).extracting(Specialty::getName).containsExactly("dentistry", "radiology", "surgery");
+
+		assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> specialties.add(radiology));
 	}
 
 }
