@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -72,6 +73,11 @@ class PetValidatorTests {
 		petValidator.validate(pet, errors);
 
 		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	void validateRejectsNonPetObject() {
+		assertThrows(IllegalArgumentException.class, () -> petValidator.validate("not a pet", errors));
 	}
 
 	@Nested

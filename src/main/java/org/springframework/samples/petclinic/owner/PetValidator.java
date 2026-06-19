@@ -35,19 +35,19 @@ public class PetValidator implements Validator {
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		Pet pet = (Pet) obj;
+		if (!(obj instanceof Pet pet)) {
+			throw new IllegalArgumentException("Object must be of type Pet");
+		}
+
 		String name = pet.getName();
-		// name validation
 		if (!StringUtils.hasText(name)) {
 			errors.rejectValue("name", REQUIRED, REQUIRED);
 		}
 
-		// type validation
 		if (pet.isNew() && pet.getType() == null) {
 			errors.rejectValue("type", REQUIRED, REQUIRED);
 		}
 
-		// birth date validation
 		if (pet.getBirthDate() == null) {
 			errors.rejectValue("birthDate", REQUIRED, REQUIRED);
 		}
